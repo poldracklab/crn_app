@@ -24,7 +24,7 @@ let Dataset = React.createClass({
 // life cycle events --------------------------------------------------
 
     componentWillReceiveProps() {
-        let params = this.getParams();
+        let params = this.props.params;
         if (params.snapshotId) {
             actions.trackView(params.snapshotId);
             actions.loadDataset(params.snapshotId, {snapshot: true});
@@ -34,7 +34,7 @@ let Dataset = React.createClass({
     },
 
     componentDidMount() {
-        let params = this.getParams();
+        let params = this.props.params;
         if (params.snapshotId) {
             actions.trackView(params.snapshotId);
             actions.loadDataset(params.snapshotId, {snapshot: true});

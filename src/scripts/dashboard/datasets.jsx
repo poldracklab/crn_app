@@ -4,7 +4,7 @@ import React         from 'react';
 import Reflux        from 'reflux';
 import Actions       from './datasets.actions.js';
 import DatasetsStore from './datasets.store.js';
-import {State, Link} from 'react-router';
+import {Link}        from 'react-router';
 import moment        from 'moment';
 import {PanelGroup}  from 'react-bootstrap';
 import Paginator     from '../common/partials/paginator.jsx';
@@ -17,14 +17,14 @@ import Sort          from './datasets.sort.jsx';
 
 let Datasets = React.createClass({
 
-    mixins: [State, Reflux.connect(DatasetsStore)],
+    mixins: [Reflux.connect(DatasetsStore)],
 
 // life cycle events -------------------------------------------------------------------------
 
     componentWillUnmount(){Actions.update({datasets:[]});},
 
     componentDidMount() {
-        let isPublic = this.getPath().indexOf('dashboard') === -1;
+        let isPublic = this.props.location.pathname.indexOf('dashboard') === -1;
         Actions.update({isPublic});
         Actions.getDatasets(isPublic);
     },
@@ -58,7 +58,7 @@ let Datasets = React.createClass({
                     <div className="fade-in  panel panel-default" key={dataset._id}>
                         <div className="panel-heading">
                             <div className="header clearfix">
-                                <Link to={isPublic ? 'snapshot' : 'dataset'} params={isPublic ? {datasetId: dataset.original, snapshotId: dataset._id} : {datasetId: dataset._id}}>
+                                <Link to={isPublic ? '/datasets/' + dataset.original + '/versions/' + dataset._id : '/datasets/' + dataset._id}>
                                     <h4 className="dataset-name">{dataset.label}</h4>
                                     <div className="meta-container">
                                         <p className="date">uploaded {user ? 'by ' : ''}<span className="name">{fullname}</span> on <span className="time-ago">{dateAdded} - {timeago} ago</span></p>

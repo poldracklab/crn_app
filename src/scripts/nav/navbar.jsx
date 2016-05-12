@@ -41,7 +41,7 @@ let BSNavbar = React.createClass({
 
     _brand(){
         return(
-            <Link to="dashboard" className="navbar-brand">
+            <Link to="/dashboard" className="navbar-brand">
                 <img src="./assets/CRN-Logo-Placeholder.png"
                      alt="Center for Reproducible Neuroscience Logo"
                      title="Center for Reproducible Neuroscience Link To Home Page"/>
@@ -54,8 +54,8 @@ let BSNavbar = React.createClass({
         let googleProfile = this.state.google;
         let loading       = this.state.loading;
         let routes        = this.props.routes;
-        let adminLink     = <Link className="nav-link" to="admin"><span className="link-name">admin</span></Link>;
-        let dashboardLink = <Link className="nav-link" to="dashboard"><span className="link-name">my datasets</span></Link>;
+        let adminLink     = <Link className="nav-link" to="/admin/users"><span className="link-name">admin</span></Link>;
+        let dashboardLink = <Link className="nav-link" to="/dashboard/datasets"><span className="link-name">my datasets</span></Link>;
 
         return (
             <ul className="nav navbar-nav main-nav">
@@ -63,7 +63,7 @@ let BSNavbar = React.createClass({
                     {userStore.hasToken() ? dashboardLink : null}
                 </li>
                 <li className="link-public">
-                    <Link className="nav-link" to="public"><span className="link-name">Public Datasets</span></Link>
+                    <Link className="nav-link" to="/datasets"><span className="link-name">Public Datasets</span></Link>
                 </li>
                 <li className="link-contact">
                     <a className="nav-link" href="mailto:openfmri@gmail.com?subject=Center%20for%20Reproducible%20Neuroscience%20Contact" target="_blank"><span className="link-name">contact</span></a>

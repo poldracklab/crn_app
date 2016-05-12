@@ -1,8 +1,8 @@
 // dependencies ----------------------------------------------------------
 
 import React from 'react';
-import {NotFoundRoute, DefaultRoute, Route} from 'react-router';
-import requireAuth from './utils/requireAuth';
+import {IndexRoute, Route} from 'react-router';
+// import requireAuth from './utils/requireAuth';
 
 // views
 import Index          from './index.jsx';
@@ -18,6 +18,8 @@ import Jobs           from './dashboard/jobs.jsx';
 import Datasets       from './dashboard/datasets.jsx';
 import Dataset        from './dataset/dataset.jsx';
 
+
+import userStore from './user/user.store.js';
 
 // redirects -------------------------------------------------------------
 
@@ -41,29 +43,43 @@ class RedirectUsers extends React.Component {
 
 // routes ----------------------------------------------------------------
 
+// function requireAuth(nextState, replace) {
+//   if (!userStore.data.token) {
+//     replace({
+//       pathname: 'sign-in',
+//       state: { nextPathname: nextState.location.pathname }
+//     })
+//   }
+// }
+
+let requireAuth = (nextState, replace) => {
+  if (!userStore.data.token) {
+    replace({ nextPathname: nextState.location.pathname }, '/sign-in');
+  }
+};
+
 // authenticated routes
-Dashboard = requireAuth(Dashboard);
-Admin     = requireAuth(Admin, 'admin');
+// Dashboard = requireAuth(Dashboard);
+// Admin     = requireAuth(Admin, 'admin');
 
 let routes = (
-    <Route name="app" path="/" handler={Index}>
-        <Route name="signIn" path="sign-in" handler={Signin}/>
-        <Route name="dashboard" path="dashboard"  handler={Dashboard} >
-            <Route name="datasets" path="datasets" handler={Datasets}/>
-            <Route name="notifications" path="notifications" handler={Notifications}/>
-            <Route name="jobs" path="jobs" handler={Jobs}/>
-            <NotFoundRoute handler={RedirectNotifications}/>
+    <Route path="/" component={Index}>
+        <Route path="sign-in" component={Signin}/>
+        <Route path="dashboard"  component={Dashboard} onEnter={requireAuth} onLeave={() => {}}>
+            <Route path="/datasets" component={Datasets}/>
+            <Route path="/notifications" component={Notifications}/>
+            <Route path="/jobs" component={Jobs}/>
         </Route>
-        <Route name="admin" path="admin" handler={Admin} >
-            <Route name="users" path="users" handler={Users} />
-            <Route name="blacklist" path="blacklist" handler={Blacklist} />
-            <NotFoundRoute handler={RedirectUsers}/>
+        <Route path="admin" component={Admin}  onEnter={requireAuth}>
+            <Route path="users" component={Users} />
+            <Route path="blacklist" component={Blacklist} />
+            <Route path="*" component={RedirectUsers}/>
         </Route>
-        <Route name="public" path="datasets" handler={Datasets}/>
-        <Route name="dataset" path="datasets/:datasetId" handler={Dataset} />
-        <Route name="snapshot" path="datasets/:datasetId/versions/:snapshotId" handler={Dataset} />
-        <DefaultRoute handler={RedirectDashboard}/>
-        <NotFoundRoute handler={RedirectDashboard}/>
+        <Route path="datasets" component={Datasets}/>
+        <Route path="datasets/:datasetId" component={Dataset} />
+        <Route path="datasets/:datasetId/versions/:snapshotId" component={Dataset} />
+        <IndexRoute component={Datasets}/>
+        <Route path="*" component={Datasets}/>
     </Route>
 );
 

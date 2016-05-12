@@ -1,9 +1,9 @@
 // dependencies -------------------------------------------------------
 
-import React                        from 'react';
-import {RouteHandler, Link}         from 'react-router';
-import BlacklistModal               from './admin.blacklist.modal.jsx';
-import actions                      from './admin.actions';
+import React          from 'react';
+import {Link}         from 'react-router';
+import BlacklistModal from './admin.blacklist.modal.jsx';
+import actions        from './admin.actions';
 
 class Dashboard extends React.Component {
 
@@ -20,10 +20,10 @@ class Dashboard extends React.Component {
             <div className="inner-route clearfix">
                 <div className="col-xs-12">
                     <ul className="nav nav-pills tabs">
-                        <li><Link to="users" className="btn-tab">Users</Link></li>
-                        <li><Link to="blacklist" className="btn-tab">Blocked Users</Link></li>
+                        <li><Link to="/admin/users" className="btn-tab">Users</Link></li>
+                        <li><Link to="/admin/blacklist" className="btn-tab">Blocked Users</Link></li>
                     </ul>
-                    <RouteHandler/>
+                    {this.props.children}
                 </div>
                 <BlacklistModal />
             </div>

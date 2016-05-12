@@ -1,7 +1,6 @@
 // dependencies -------------------------------------------------------
 
 import React                from 'react';
-import {RouteHandler}       from 'react-router';
 
 
 class Dashboard extends React.Component {
@@ -22,8 +21,7 @@ class Dashboard extends React.Component {
 
                     */}
                     
-                
-                    <RouteHandler/>
+                    {this.props.children}
                 </div>
             </div>
         );

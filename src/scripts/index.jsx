@@ -5,14 +5,11 @@ import Navbar                   from './nav/navbar.jsx';
 import userActions              from './user/user.actions.js';
 import bowser                   from 'bowser';
 import Happybrowser             from './common/partials/happybrowser.jsx';
-import {RouteHandler, State}    from 'react-router';
 import 'babel-polyfill';
 
 // component setup -----------------------------------------------------------
 
 let App = React.createClass({
-
-    mixins: [State],
 
 // life cycle methods --------------------------------------------------------
 
@@ -23,10 +20,10 @@ let App = React.createClass({
     render () {
 
         let pageClasses = ' ';
-        let routes = this.getRoutes();
+        let routes = this.props.routes;
 
         for (let route of routes) { pageClasses += route.name + ' '; }
-        let is_front        = this.isActive('signIn');
+        let is_front        = this.props.history.isActive('signIn');
 
         return (
             <div className={is_front ? 'page is-front' + pageClasses : 'page' + pageClasses}>
@@ -35,7 +32,7 @@ let App = React.createClass({
                     <Navbar routes={routes} />
                     <div className="main view container">
                         <div className="route-wrapper">
-                            <RouteHandler/>
+                            {this.props.children}
                         </div>
                     </div>
                 </div>
