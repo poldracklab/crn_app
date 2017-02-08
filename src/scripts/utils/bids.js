@@ -3,6 +3,7 @@ import scitran   from './scitran';
 import crn       from './crn';
 import userStore from '../user/user.store';
 import fileUtils from './files';
+import hex       from './hex';
 
 /**
  * BIDS
@@ -260,7 +261,7 @@ export default  {
 
         let dataset = {
             /** same as original **/
-            _id:         project._id,
+            _id:         this.decodeId(project._id),
             label:       project.label,
             group:       project.group,
             created:     project.created,
@@ -282,9 +283,20 @@ export default  {
         dataset.authors            = dataset.description.Authors;
         dataset.referencesAndLinks = dataset.description.ReferencesAndLinks;
         dataset.user               = this.user(dataset, users);
-        if (project.original) {dataset.original = project.original;}
+        if (project.original) {dataset.original = this.decodeId(project.original);}
         if (project.snapshot_version) {dataset.snapshot_version = project.snapshot_version;}
         return dataset;
+    },
+
+    /**
+     * Decode Id
+     */
+    decodeId (id) {
+        let decodedId = hex.toASCII(id);
+        if (decodedId.indexOf('    ds') > -1) {
+            return decodedId.slice(4);
+        }
+        return id;
     },
 
     /**
