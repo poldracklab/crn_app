@@ -293,8 +293,10 @@ export default  {
      */
     decodeId (id) {
         let decodedId = hex.toASCII(id);
-        if (decodedId.indexOf('    ds') > -1) {
+        if (/\s{4}ds\d{6}/.test(decodedId)) {
             return decodedId.slice(4);
+        } else if (/\d{6}-\d{5}/.test(decodedId)) {
+            return decodedId.slice(7);
         }
         return id;
     },
