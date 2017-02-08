@@ -171,7 +171,7 @@ let datasetStore = Reflux.createStore({
         if (isOriginal) {
             router.transitionTo('dataset', {datasetId: snapshotId});
         } else {
-            router.transitionTo('snapshot', {datasetId, snapshotId});
+            router.transitionTo('snapshot', {datasetId, snapshotId: bids.decodeId(snapshotId)});
         }
     },
 
@@ -1164,7 +1164,7 @@ let datasetStore = Reflux.createStore({
                 if (latestSnapshot && (moment(this.data.dataset.modified).diff(moment(latestSnapshot.modified)) <= 0)) {
                     callback({error: 'No modifications have been made since the last snapshot was created. Please use the most recent snapshot.'});
                 } else {
-                    scitran.createSnapshot(datasetId, (err, res) => {
+                    crn.createSnapshot(datasetId, (err, res) => {
                         this.toggleSidebar(true);
                         if (transition) {
                             router.transitionTo('snapshot', {datasetId: this.data.dataset._id, snapshotId: res.body._id});
