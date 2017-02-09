@@ -289,7 +289,18 @@ export default  {
     },
 
     /**
-     * Decode Id
+     * Encode ID
+     */
+    encodeId (datasetId, snapshotId) {
+        if (snapshotId) {
+
+        } else {
+            return hex.fromASCII('    ' + datasetId);
+        }
+    },
+
+    /**
+     * Decode ID
      */
     decodeId (id) {
         let decodedId = hex.toASCII(id);
