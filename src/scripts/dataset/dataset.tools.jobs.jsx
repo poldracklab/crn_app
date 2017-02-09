@@ -624,11 +624,11 @@ export default class JobMenu extends React.Component {
                 } else {
                     message = 'There was an issue submitting your analysis. Double check your inputs and try again. If the issue persists, please contact the site administrator.';
                 }
+                this.setState({loading: false, message: message, error: error});
             } else {
                 message = 'Your analysis has been submitted. Periodically check the Analyses section of this dataset to view the status and results.';
+                this.setState({loading: false, message: message, jobId: res.body.result.id});
             }
-
-            this.setState({loading: false, message: message, error: error, jobId: res.body.result.id});
         });
     }
 }
