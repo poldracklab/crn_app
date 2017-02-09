@@ -12,6 +12,12 @@ export default {
             str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
         }
         return str;
+    },
+
+    fromASCII(string) {
+        return string.split('').map((c) => {
+            return ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join('');
     }
 
 };
