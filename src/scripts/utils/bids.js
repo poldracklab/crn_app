@@ -291,11 +291,13 @@ export default  {
     /**
      * Encode ID
      */
-    encodeId (datasetId, snapshotId) {
-        if (snapshotId) {
-
+    encodeId (id) {
+        if (/ds\d{6}/.test(id)) {
+            return hex.fromASCII('    ' + id);
+        } else if (/\d{6}-\d{5}/.test(id)) {
+            return hex.fromASCII(id);
         } else {
-            return hex.fromASCII('    ' + datasetId);
+            return id;
         }
     },
 
