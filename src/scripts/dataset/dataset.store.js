@@ -141,7 +141,7 @@ let datasetStore = Reflux.createStore({
                         children: dataset.children
                     }]});
                     let originalId = dataset.original ? dataset.original : datasetId;
-                    this.loadJobs(datasetId, snapshot, originalId, options, (jobs) => {
+                    this.loadJobs(bids.encodeId(datasetId), snapshot, originalId, options, (jobs) => {
                         this.loadSnapshots(dataset, jobs, () => {
                             this.update({loading: false, snapshot: snapshot});
                         });
@@ -876,7 +876,7 @@ let datasetStore = Reflux.createStore({
     loadJobs(projectId, snapshot, originalId, options, callback) {
         let jobId = options.job;
         this.update({loadingJobs: true});
-        crn.getDatasetJobs(projectId, (err, res) => {
+        crn.getDatasetJobs(bids.encodeId(projectId), (err, res) => {
             let jobs = {};
 
             // iterate jobs
@@ -947,7 +947,7 @@ let datasetStore = Reflux.createStore({
 
             // callback with original jobs array
             if (snapshot && callback) {
-                crn.getDatasetJobs(originalId, (err1, res1) => {
+                crn.getDatasetJobs(bids.encodeId(originalId), (err1, res1) => {
                     callback(res1.body);
                 }, {snapshot: false});
             } else if (callback) {
@@ -959,14 +959,14 @@ let datasetStore = Reflux.createStore({
     pollJob(jobId, snapshotId) {
         let interval = 5000;
         let poll = (jobId) => {
-            if (this.data.dataset && this.data.dataset._id === snapshotId) {
+            if (this.data.dataset && this.data.dataset._id === bids.decodeId(snapshotId)) {
                 this.refreshJob(jobId, (job) => {
                     let status = job.agave.status;
                     let finished = status === 'FINISHED';
                     let failed = status === 'FAILED';
                     let hasResults = job.results && job.results.length > 0;
                     let needsUpdate = (!finished && !failed) || (finished && !hasResults);
-                    if (needsUpdate && this.data.dataset && job.snapshotId === this.data.dataset._id) {
+                    if (needsUpdate && this.data.dataset && bids.decodeId(job.snapshotId) === this.data.dataset._id) {
                         setTimeout(poll.bind(this, jobId), interval);
                     }
                 });
@@ -984,7 +984,7 @@ let datasetStore = Reflux.createStore({
             appId:             app.id,
             appLabel:          app.label,
             appVersion:        app.version,
-            datasetId:         datasetId,
+            datasetId:         bids.encodeId(datasetId),
             datasetLabel:      this.data.dataset.label,
             executionSystem:   app.executionSystem,
             parameters:        parameters,
@@ -999,7 +999,7 @@ let datasetStore = Reflux.createStore({
             callback(err, res);
             if (!err) {
                 // reload jobs
-                if (snapshotId == this.data.dataset._id) {
+                if (bids.decodeId(snapshotId) == this.data.dataset._id) {
                     let jobId = res.body.result.id;
                     this.loadJobs(snapshotId, this.data.snapshot, datasetId, {job: jobId}, (jobs) => {
                         this.loadSnapshots(this.data.dataset, jobs);
@@ -1036,7 +1036,7 @@ let datasetStore = Reflux.createStore({
                             }
                         }
                     }
-                    if (this.data.dataset && jobUpdate && this.data.dataset._id === jobUpdate.snapshotId) {
+                    if (this.data.dataset && jobUpdate && this.data.dataset._id === bids.decodeId(jobUpdate.snapshotId)) {
                         this.update({jobs});
                     }
                 }
@@ -1060,9 +1060,9 @@ let datasetStore = Reflux.createStore({
     dismissJobsModal(success, snapshotId, appLabel, appVersion, jobId) {
         this.toggleModal('jobs');
         if (success) {
-            if (snapshotId !== this.data.dataset._id) {
+            if (bids.decodeId(snapshotId) !== this.data.dataset._id) {
                 let datasetId = this.data.dataset.original ? this.data.dataset.original : this.data.dataset._id;
-                router.transitionTo('snapshot', {datasetId, snapshotId}, {app: appLabel, version: appVersion, job: jobId});
+                router.transitionTo('snapshot', {datasetId, snapshotId: bids.decodeId(snapshotId)}, {app: appLabel, version: appVersion, job: jobId});
             }
         }
     },
@@ -1165,12 +1165,13 @@ let datasetStore = Reflux.createStore({
                     callback({error: 'No modifications have been made since the last snapshot was created. Please use the most recent snapshot.'});
                 } else {
                     crn.createSnapshot(datasetId, (err, res) => {
+                        let snapshotId = bids.decodeId(res.body._id);
                         this.toggleSidebar(true);
                         if (transition) {
-                            router.transitionTo('snapshot', {datasetId: this.data.dataset._id, snapshotId: res.body._id});
+                            router.transitionTo('snapshot', {datasetId: this.data.dataset._id, snapshotId: snapshotId});
                         }
                         this.loadSnapshots(this.data.dataset, [], () => {
-                            if (callback){callback(res.body._id);}
+                            if (callback){callback(snapshotId);}
                         });
                     });
                 }
