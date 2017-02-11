@@ -12,6 +12,7 @@ import markdown from '../utils/markdown';
 import validate from 'bids-validator';
 import scitran  from '../utils/scitran';
 import Results  from '../upload/upload.validation-results.jsx';
+import bids     from '../utils/bids';
 
 export default class JobMenu extends React.Component {
 
@@ -58,7 +59,7 @@ export default class JobMenu extends React.Component {
         // pre-select snapshots
         if (!this.state.selectedSnapshot) {
             this.props.snapshots.map((snapshot) => {
-                if (snapshot._id == this.props.dataset._id) {
+                if (bids.decodeId(snapshot._id) == this.props.dataset._id) {
                     if (snapshot.original) {
                         this._selectSnapshot({target: {value: snapshot._id}});
                     } else if (this.props.snapshots.length > 1) {
