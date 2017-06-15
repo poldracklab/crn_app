@@ -202,7 +202,7 @@ class JobAccordion extends React.Component {
                     if(exitCode === 0){
                        exit_code =  (<span className="label label-success">SUCCESS</span>);
                     }else{
-                        exit_code = <span><span className="label label-danger">FAIL</span> Exit code {exitCode}</span>
+                        exit_code = (<span><span className="label label-danger">FAIL</span> Exit code {exitCode}</span>);
                     }
 
 
