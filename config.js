@@ -51,6 +51,6 @@ export default {
 		},
 
 		analytics: {
-			trackingId: process.env.GOOGLE_TRACKING_ID
+			trackingId: 'UA-100754266-1'
 		}
 };
